@@ -1,9 +1,9 @@
-import { createApp, provide, h } from 'vue';
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
+import { createApp } from 'vue';
 import { DefaultApolloClient } from '@vue/apollo-composable';
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
+import { createApolloProvider } from '@vue/apollo-option';
 
-import App from './App.vue';
-
+import App from './Components/App/App.vue';
 
 // HTTP connection to the API
 const httpLink = createHttpLink({
@@ -18,15 +18,15 @@ const cache = new InMemoryCache()
 const apolloClient = new ApolloClient({
     link: httpLink,
     cache,
+    connectToDevTools: true,
 })
 
-
-const app = createApp({
-    setup() {
-        provide(DefaultApolloClient, apolloClient)
-    },
-
-    render: () => h(App)
+const apolloProvider = createApolloProvider({
+    defaultClient: apolloClient,
 })
 
-app.mount("#app")
+const app = createApp(App)
+
+app.provide(DefaultApolloClient, apolloClient)
+
+app.mount('#app')
